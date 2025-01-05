@@ -1,3 +1,4 @@
+import logging
 from util.DatabaseConnection import DBConnector
 
 class UserDAO:

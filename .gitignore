@@ -1,1 +1,3 @@
 resources/db_connection.json
+logs/
+log/logs/

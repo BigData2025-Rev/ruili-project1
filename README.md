@@ -19,8 +19,8 @@
 - id: int, primary key
 - user_id: int, not null, references users(id)
 - product_id: int, not null, references product(id)
-- quantity: int, not null
-- date: datetime, not null, default current_timestamp
+- inventory: int, not null
+- order_date: datetime, not null, default current_timestamp
 
 ### Web Page
 **Login and register page**
