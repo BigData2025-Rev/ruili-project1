@@ -10,6 +10,9 @@ SECRET_KEY = "ruili-project-1"
 class UserService:
     @staticmethod
     def register_user(username, password, role="user"):
+
+        print("Get register request: " + username + " " + password)
+
         # 检查用户名是否已存在
         existing_user = UserDAO.get_user_by_username(username)
         if existing_user:
