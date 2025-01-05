@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="/static/js/admin.js" defer></script>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <button id="check-users-button">Check All Users</button>
+    <button id="return-button">Return</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="users-table">
+            <!-- User rows will be dynamically populated here -->
+        </tbody>
+    </table>
+    <button id="logout-button">Logout</button>
+</body>
+</html>
