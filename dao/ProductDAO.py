@@ -28,7 +28,7 @@ class ProductDAO:
     """
     
     @staticmethod
-    def create_product(name, price, inventory, category=None, description=None):
+    def create_product(product):
         connection = None
         try:
             connection = DBConnector.get_connection()
@@ -38,15 +38,35 @@ class ProductDAO:
                 INSERT INTO products (name, price, inventory, category, description)
                 VALUES (%s, %s, %s, %s, %s)
             """
-            cursor.execute(query, (name, price, inventory, category, description))
+            cursor.execute(query, (product.name, product.price, product.inventory, product.category, product.description))
             connection.commit()
 
-            logger.info(f"Product created: {name}, price={price}, inventory={inventory}.")
+            logger.info(f"Product created: {product.name}, price={product.price}, inventory={product.inventory}.")
             return cursor.lastrowid
 
         except mysql.connector.Error as e:
             logger.warning(f"Failed to create product: {e}")
             return None
+
+        finally:
+            if connection and connection.is_connected():
+                connection.close()
+
+    @staticmethod
+    def get_all_products():
+        connection = None
+        try:
+            connection = DBConnector.get_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            query = "SELECT * FROM products"
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return [Product.from_dict(row) for row in results]
+
+        except mysql.connector.Error as e:
+            logger.warning(f"Failed to get all products: {e}")
+            return []
 
         finally:
             if connection and connection.is_connected():

@@ -1,6 +1,8 @@
 from flask import render_template, jsonify, request, redirect, url_for, session
 from app import app
 from service.UserService import UserService
+from service.ProductService import ProductService
+from service.OrderService import OrderService
 
 @app.route('/')
 def index():
@@ -40,6 +42,11 @@ def welcome():
     if 'token' not in session:
         return redirect(url_for('index'))
     return render_template('welcome.html', username=session.get('username'))
+
+
+"""
+User Related API
+"""
 
 @app.route('/admin', methods=['GET'])
 def admin_page():
@@ -91,3 +98,75 @@ def update_role_by_id():
 
     result = UserService.update_user_role_by_user_id(data['user_id'], data['role'])
     return jsonify(result)
+
+
+"""
+Product related API
+"""
+
+@app.route('/products', methods=['GET'])
+def get_all_products():
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    products = ProductService.get_all_products()
+    return jsonify(products), 200
+
+@app.route('/product', methods=['PUT'])
+def add_product():
+    # add a new product
+    # the request.json should include:
+    #   product name
+    #   product price
+    #   product inventory
+    #   product category (can be empty)
+    #   product description (can be empty) 
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    if session['role'] != 'admin':
+        return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
+    data = request.json
+    if not data or 'name' not in data or 'price' not in data or 'inventory' not in data \
+        or "category" not in data or "description" not in data:
+        return jsonify({"success": False, "message": "Invalid input."}), 400
+    result = ProductService.add_product(data)
+    return jsonify(result), (201 if result["success"] else 500)
+
+@app.route('/product/inventory', methods=['PUT'])
+def update_product_inventory():
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    # update product inventory
+    # the request.json should include product_id, product_change_amount(int, + or -)
+    data = request.json
+    if not data or 'product_id' not in data or 'change_amount' not in data:
+        return jsonify({"success": False, "message": "Invalid input."}), 400
+    result = ProductService.update_inventory_by_id(data['product_id'], data['change_amount'])
+    return jsonify(result), (200 if result["success"] else 500)
+
+@app.route('/product/price', methods=['PUT'])
+def update_product_price():
+    # update product price
+    # the request.json should include product_id, product_new_price(int)
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    if session['role'] != 'admin':
+        return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
+    data = request.json
+    if not data or 'product_id' not in data or 'new_price' not in data:
+        return jsonify({"success": False, "message": "Invalid input."}), 400
+    result = ProductService.update_price_by_id(data['product_id'], data['new_price'])
+    return jsonify(result), (200 if result["success"] else 500)
+
+@app.route('/product', methods=['DELETE'])
+def delete_product_by_id():
+    # delete product
+    # the request.json should include product_id
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    if session['role'] != 'admin':
+        return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
+    data = request.json
+    if not data or 'product_id' not in data:
+        return jsonify({"success": False, "message": "Invalid input."}), 400
+    result = ProductService.delete_product_by_id(data['product_id'])
+    return jsonify(result), (200 if result["success"] else 500)
