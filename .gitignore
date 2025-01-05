@@ -1,3 +1,5 @@
-resources/db_connection.json
 logs/
 log/logs/
+config/
+config.py
+db_connection.json
