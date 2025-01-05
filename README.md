@@ -17,9 +17,9 @@
 
 **Table: orders**
 - id: int, primary key
-- user_id: int, not null, references users(id)
-- product_id: int, not null, references product(id)
-- inventory: int, not null
+- user_id: int, not null, references users(id), on delete/update cascade
+- product_id: int, not null, references product(id), on delete/update cascade
+- quantity: int, not null
 - order_date: datetime, not null, default current_timestamp
 
 ### Web Page

@@ -7,6 +7,40 @@ import mysql.connector
 logger = get_logger(__name__)
 
 class UserDAO:
+
+    """
+    Table users:
+    +----------+----------------------+------+-----+---------+----------------+
+    | Field    | Type                 | Null | Key | Default | Extra          |
+    +----------+----------------------+------+-----+---------+----------------+
+    | id       | int                  | NO   | PRI | NULL    | auto_increment |
+    | username | varchar(255)         | NO   | UNI | NULL    |                |
+    | password | varchar(255)         | NO   |     | NULL    |                |
+    | role     | enum('user','admin') | NO   |     | NULL    |                |
+    +----------+----------------------+------+-----+---------+----------------+
+    """
+
+    @staticmethod
+    def get_all_users():
+        """获取所有用户"""
+        connection = None
+        try:
+            connection = DBConnector.get_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            query = "SELECT * FROM users"
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return [User.from_dict(row) for row in results]
+
+        except mysql.connector.Error as e:
+            logger.warning(f"Database query failed: {e}")
+            return []
+
+        finally:
+            if connection and connection.is_connected():
+                connection.close()
+
     @staticmethod
     def get_user_by_username(username):
         connection = None
