@@ -4,29 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="/static/js/welcome.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1 id="welcome-message"></h1>
-        <button id="logout-button">Logout</button>
-    </div>
-    <script>
-        // Check for token and redirect if not logged in
-        const token = localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/";
-        } else {
-            // Parse token to get username
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            document.getElementById("welcome-message").innerText = `Welcome, ${payload.username}!`;
-        }
-
-        // Logout functionality
-        document.getElementById("logout-button").addEventListener("click", () => {
-            localStorage.removeItem("token");
-            window.location.href = "/";
-        });
-    </script>
+    <h1>Welcome, {{ username }}!</h1>
+    <button id="logout-button">Logout</button>
 </body>
 </html>

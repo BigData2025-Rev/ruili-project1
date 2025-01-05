@@ -4,8 +4,9 @@ import bcrypt
 import jwt
 from dao.UserDAO import UserDAO
 from datetime import datetime, timedelta, timezone
+from config.config import Config
 
-SECRET_KEY = "ruili-project-1"
+SECRET_KEY = Config.UserServiceSecretKey
 
 class UserService:
     @staticmethod
