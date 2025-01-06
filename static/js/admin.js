@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch all users when "Check All Users" button is clicked
     document.getElementById('check-users-button').addEventListener('click', async () => {
+        document.getElementById('users-table').style.display = 'table-row-group';
         tableBody.innerHTML = ''; // Clear existing rows
         try {
             const response = await fetch('/users');
@@ -204,7 +205,72 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             alert(`Error adding product: ${error.message}`);
         }
-    });    
+    }); 
+
+    const ordersTable = document.getElementById('orders-table');
+    const ordersTableBody = document.getElementById('orders-table-body');
+
+    // Check All Orders
+    document.getElementById('check-orders-button').addEventListener('click', async () => {
+        ordersTableBody.innerHTML = ''; // Clear existing rows
+        try {
+            const response = await fetch('/orders');
+            const result = await response.json();
+
+            if (result.success) {
+                ordersTable.style.display = 'table'; // Show table
+
+                result.orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    
+                    const orderIdCell = document.createElement('td');
+                    orderIdCell.textContent = order.id;
+                    row.appendChild(orderIdCell);
+
+                    const userIdCell = document.createElement('td');
+                    userIdCell.textContent = order.user_id;
+                    row.appendChild(userIdCell);
+
+                    const productIdCell = document.createElement('td');
+                    productIdCell.textContent = order.product_id;
+                    row.appendChild(productIdCell);
+
+                    const productNameCell = document.createElement('td');
+                    productNameCell.textContent = order.product_name || 'Unknown';
+                    row.appendChild(productNameCell);
+
+                    const quantityCell = document.createElement('td');
+                    quantityCell.textContent = order.quantity;
+                    row.appendChild(quantityCell);
+
+                    const orderDateCell = document.createElement('td');
+                    orderDateCell.textContent = new Date(order.order_date).toLocaleString();
+                    row.appendChild(orderDateCell);
+
+                    ordersTableBody.appendChild(row);
+                });
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            alert('Failed to fetch orders.');
+        }
+    });
+
+    // Hide Orders
+    document.getElementById('hide-orders-button').addEventListener('click', () => {
+        ordersTable.style.display = 'none';
+    });
+
+    // Hide Users
+    document.getElementById('hide-users-button').addEventListener('click', () => {
+        document.getElementById('users-table').style.display = 'none';
+    });
+
+    // Hide Products
+    document.getElementById('hide-products-button').addEventListener('click', () => {
+        document.getElementById('products-table').style.display = 'none';
+    });
 
     // Logout functionality
     document.getElementById('logout-button').addEventListener('click', async () => {

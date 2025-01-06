@@ -14,6 +14,7 @@
     
     <h2>Users</h2>
     <button id="check-users-button">Check All Users</button>
+    <button id="hide-users-button">Hide Users</button>
     <table border="1">
         <thead>
             <tr>
@@ -30,6 +31,7 @@
 
     <h2>Products</h2>
     <button id="check-products-button">Check All Products</button>
+    <button id="hide-products-button">Hide Products</button>
     <table border="1" id="products-table">
         <thead>
             <tr>
@@ -42,6 +44,25 @@
         </thead>
         <tbody id="products-table-body">
             <!-- Product rows will be dynamically populated here -->
+        </tbody>
+    </table>
+    
+    <h2>Orders</h2>
+    <button id="check-orders-button">Check All Orders</button>
+    <button id="hide-orders-button">Hide Orders</button>
+    <table border="1" id="orders-table" style="display:none;">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User ID</th>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tbody id="orders-table-body">
+            <!-- Order rows will be dynamically populated here -->
         </tbody>
     </table>
 
@@ -67,6 +88,6 @@
         <br>
         <button type="submit">Add Product</button>
     </form>
-    
+
 </body>
 </html>
