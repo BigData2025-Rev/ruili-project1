@@ -65,6 +65,7 @@ class OrderDAO:
             query = "SELECT * FROM orders"
             cursor.execute(query)
             results = cursor.fetchall()
+            logger.info("Queried all orders and returned.")
             return [Order.from_dict(row) for row in results]
 
         except mysql.connector.Error as e:

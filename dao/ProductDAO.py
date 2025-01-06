@@ -62,6 +62,7 @@ class ProductDAO:
             query = "SELECT * FROM products"
             cursor.execute(query)
             results = cursor.fetchall()
+            logger.info(f"Queried all products and returned.")
             return [Product.from_dict(row) for row in results]
 
         except mysql.connector.Error as e:

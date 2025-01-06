@@ -5,6 +5,9 @@ from service.UserService import UserService
 from service.ProductService import ProductService
 from service.OrderService import OrderService
 from werkzeug.utils import secure_filename
+from log.log import get_logger
+
+logger = get_logger(__name__)
 
 @app.route('/')
 def index():
@@ -18,7 +21,7 @@ def register():
     data = request.json
     if not data or 'username' not in data or 'password' not in data:
         return jsonify({"success": False, "message": "Invalid input."}), 400
-
+    logger.info(f"Request received at '/register' with data: {data}")
     result = UserService.register_user(data['username'], data['password'])
     return jsonify(result)
 
@@ -28,6 +31,7 @@ def login():
     if not data or 'username' not in data or 'password' not in data:
         return jsonify({"success": False, "message": "Invalid input."}), 400
 
+    logger.info(f"Request received at '/login' with data: {data}")
     result = UserService.login_user(data['username'], data['password'])
     if result['success']:
         session['token'] = result['token']  # Store JWT token in session
@@ -35,6 +39,7 @@ def login():
         session['username'] = result['payload']['username']  # Store username in session
         session['role'] = result['payload']['role']
         session['exp'] = result['payload']['exp']
+        logger.info(f"User {session['user_id']} : {session['username']} : {session['role']} logged in.")
         return redirect(url_for('welcome'))  # Redirect to welcome page on success
     return jsonify(result)
 
@@ -82,6 +87,7 @@ def admin_page():
 
 @app.route('/logout', methods=['GET'])
 def logout():
+    logger.info(f"User {session['user_id']} : {session['username']} : {session['role']} logged out.")
     session.clear()  # Clear all session data
     return jsonify({"success": True, "message": "Logged out successfully."})
 
@@ -91,7 +97,7 @@ def get_all_users():
         return jsonify({"success": False, "message": "Unauthorized access."}), 401
     if session['role'] != 'admin':
         return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
-
+    logger.info(f"Request received at '/users to query all users. With current user {session['user_id']} : {session['username']}'")
     result = UserService.get_all_users()
     return jsonify(result)
 
@@ -103,6 +109,7 @@ def delete_user_by_id():
         return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
 
     data = request.json
+    logger.info(f"Request received at '/user to delete user with data : {data}'")
     if not data or 'user_id' not in data:
         return jsonify({"success": False, "message": "User ID is required."}), 400
 
@@ -117,6 +124,7 @@ def update_role_by_id():
         return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
 
     data = request.json
+    logger.info(f"Request received at '/users to update a user with data : {data}'")
     if not data or 'user_id' not in data or 'role' not in data:
         return jsonify({"success": False, "message": "User ID and new role are required."}), 400
 
@@ -129,6 +137,7 @@ def add_deposit_to_current_user():
         return jsonify({"success": False, "message": "Unauthorized access."}), 401
     
     data = request.json
+    logger.info(f"Request received at '/adddeposit to add deposit to current user : {session['username']} {data}'")
     if not data or 'amount' not in data:
         return jsonify({"success": False, "message": "Deposit add amount are required."}), 400
     
@@ -141,6 +150,7 @@ def minus_deposit_to_current_user():
         return jsonify({"success": False, "message": "Unauthorized access."}), 401
     
     data = request.json
+    logger.info(f"Request received at '/minusdeposit to minus deposit to current user : {session['username']} {data}'")
     if not data or 'amount' not in data:
         return jsonify({"success": False, "message": "Deposit minus amount are required."}), 400
     
@@ -179,6 +189,7 @@ def add_product():
     data = request.form  # take product info
     file = request.files.get('image')  # product image info
 
+    logger.info(f"Request received at '/product to add new product : {session['username']} : {data}'")
     if not data or 'name' not in data or 'price' not in data or 'inventory' not in data:
         return jsonify({"success": False, "message": "Invalid input."}), 400
 
@@ -205,6 +216,7 @@ def update_product_inventory():
     # update product inventory
     # the request.json should include product_id, product_change_amount(int, + or -)
     data = request.json
+    logger.info(f"Request received at '/product/inventory to change product inventory : {session['username']} {data}'")
     if not data or 'product_id' not in data or 'change_amount' not in data:
         return jsonify({"success": False, "message": "Invalid input."}), 400
     result = ProductService.update_inventory_by_id(data['product_id'], data['change_amount'])
@@ -219,6 +231,7 @@ def update_product_price():
     if session['role'] != 'admin':
         return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
     data = request.json
+    logger.info(f"Request received at '/product/price to change product price : {session['username']} {data}'")
     if not data or 'product_id' not in data or 'new_price' not in data:
         return jsonify({"success": False, "message": "Invalid input."}), 400
     result = ProductService.update_price_by_id(data['product_id'], data['new_price'])
@@ -233,6 +246,7 @@ def delete_product_by_id():
     if session['role'] != 'admin':
         return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
     data = request.json
+    logger.info(f"Request received at '/product to delete a product : {session['username']} {data}'")
     if not data or 'product_id' not in data:
         return jsonify({"success": False, "message": "Invalid input."}), 400
     result = ProductService.delete_product_by_id(data['product_id'])
@@ -248,6 +262,7 @@ def get_all_orders():
         return redirect(url_for('index'))
     if session['role'] != 'admin':
         return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
+    logger.info(f"Request received at '/orders to retrieve all orders : {session['username']}'")
     result = OrderService.get_all_orders()
     return jsonify(result), (200 if result["success"] else 500)
 
@@ -256,6 +271,7 @@ def get_current_user_orders():
     # this method only works for current user
     if 'token' not in session:
         return redirect(url_for('index'))
+    logger.info(f"Request received at '/user/orders to retrieve all orders for current user: {session['username']}'")
     result = OrderService.get_order_by_user_id(session['user_id'])
     return jsonify(result), (200 if result["success"] else 500)
 
@@ -272,6 +288,7 @@ def purchase_product():
         return jsonify({"success": False, "message": "User ID not found in session."}), 400
 
     data = request.json
+    logger.info(f"Request received at '/purchase to make a purchase : {session['username']} {data}'")
     if not data or 'product_id' not in data or 'quantity' not in data:
         return jsonify({"success": False, "message": "Product ID and quantity are required."}), 400
 

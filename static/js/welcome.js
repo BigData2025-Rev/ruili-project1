@@ -108,7 +108,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             // 尝试加载不同格式的图片
             function tryNextFormat() {
                 if (formatIndex < formats.length) {
-                    img.src = `/static/img/${product.name.replace(/\s+/g, '_')}.${formats[formatIndex]}`;
+                    img.src = `/static/img/${product.name
+                        .replace(/\s+/g, '_')                 // 替换空格为下划线
+                        .replace(/[^a-zA-Z0-9\u4e00-\u9fa5_]/g, '') // 移除非英文字母、数字、汉字和下划线的字符
+                    }.${formats[formatIndex]}`;
                     formatIndex++;
                 } else {
                     // 如果所有格式都失败，则使用默认图片

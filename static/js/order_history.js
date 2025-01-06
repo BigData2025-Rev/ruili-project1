@@ -25,7 +25,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         function tryNextFormat() {
             if (formatIndex < formats.length) {
-                imgElement.src = `/static/img/${productName.replace(/\s+/g, '_')}.${formats[formatIndex]}`;
+                imgElement.src = `/static/img/${productName
+                    .replace(/\s+/g, '_')                       // replace space to _
+                    .replace(/[^a-zA-Z0-9\u4e00-\u9fa5_]/g, '') // remove non alpha/number/chinese/underscore characters
+                }.${formats[formatIndex]}`;
                 formatIndex++;
             } else {
                 imgElement.src = '/static/img/default.jpg'; // Fallback image

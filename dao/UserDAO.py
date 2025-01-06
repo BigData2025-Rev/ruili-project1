@@ -32,6 +32,7 @@ class UserDAO:
             query = "SELECT * FROM users"
             cursor.execute(query)
             results = cursor.fetchall()
+            logger.info(f"Returned all users.")
             return [User.from_dict(row) for row in results]
 
         except mysql.connector.Error as e:
@@ -54,10 +55,11 @@ class UserDAO:
             result = cursor.fetchone()
 
             if result:
-                # 将结果转换为 User 对象
                 user = User.from_dict(result)
+                logger.info(f"Queried a user {user.username} and returned.")
                 return user
             else:
+                logger.info(f"Didn't find user with username : {username}")
                 return None
 
         except mysql.connector.Error as e:
@@ -80,10 +82,11 @@ class UserDAO:
             result = cursor.fetchone()
 
             if result:
-                # 将结果转换为 User 对象
                 user = User.from_dict(result)
+                logger.info(f"Queried a user with user id {user_id} and returned.")
                 return user
             else:
+                logger.info(f"Didn't find user with user id : {user_id}")
                 return None
 
         except mysql.connector.Error as e:
@@ -151,7 +154,7 @@ class UserDAO:
             connection.commit()
 
             logger.info(f"Updated username for user_id={user_id} to {new_username}.")
-            return cursor.rowcount  # 返回受影响的行数
+            return cursor.rowcount 
 
         except mysql.connector.Error as e:
             logger.warning(f"Failed to update username: {e} for user_id={user_id}.")

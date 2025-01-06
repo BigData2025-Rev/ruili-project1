@@ -1,4 +1,11 @@
+# TODO
+- Finish logger logic.
+- Add more css web style.
+- Make ERD.
+- Improve code readability.
+
 # ruili-project1
+- A market website with account system.
 
 ### Database
 **Table: users**
@@ -6,6 +13,7 @@
 - username: varchar(255), unique, not null
 - password: varchar(255), not null
 - role: enum('user', 'admin'), not null
+- deposit: decimal(10, 2), default 0.0
 
 **Table: products**
 - id: int, primary key
@@ -31,18 +39,18 @@
 - register
   - take username and password, send to server to register
 
-**Product page**
+**Welcome page**
 - Show products, price, quantity
-- Can add product with an amount to cart.
-- can check out cart
+- Can purchase product.
+- Can add deposit.
 
 **Order history page**
 - can check user's order history
 
 **Admin page**
-- Can check all existing users and change password, account, role
-- can check each user's order history
-- can check all products, modify quantity and price
-- can add new product
-- can delete product
+- Can check all existing users and change update role, delete account.
+- can check all user's order history.
+- can check all products, modify quantity and price.
+- can add new product.
+- can update and delete product.
 
