@@ -58,6 +58,129 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+    const productsTable = document.getElementById('products-table');
+    const productsTableBody = document.getElementById('products-table-body');
+    
+    // Check All Products
+    document.getElementById('check-products-button').addEventListener('click', async () => {
+        productsTableBody.innerHTML = ''; // Clear existing rows
+        try {
+            const response = await fetch('/products');
+            const result = await response.json();
+
+            if (result.success) {
+                productsTable.style.display = 'table'; // Show table
+
+                result.products.forEach(product => {
+                    const row = document.createElement('tr');
+
+                    // Product ID
+                    const idCell = document.createElement('td');
+                    idCell.textContent = product.id;
+                    row.appendChild(idCell);
+
+                    // Product Name
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = product.name;
+                    row.appendChild(nameCell);
+
+                    // Inventory
+                    const inventoryCell = document.createElement('td');
+                    const inventoryInput = document.createElement('input');
+                    inventoryInput.type = 'number';
+                    inventoryInput.value = product.inventory;
+                    inventoryInput.min = 0;
+                    inventoryInput.style.width = '60px';
+                    inventoryCell.appendChild(inventoryInput);
+                    const updateInventoryButton = document.createElement('button');
+                    updateInventoryButton.textContent = 'Update';
+                    updateInventoryButton.addEventListener('click', async () => {
+                        const newInventory = parseInt(inventoryInput.value);
+                        if (isNaN(newInventory) || newInventory < 0) {
+                            alert('Invalid inventory value');
+                            return;
+                        }
+                        const updateResponse = await fetch('/product/inventory', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ product_id: product.id, change_amount: newInventory - product.inventory })
+                        });
+                        const updateResult = await updateResponse.json();
+                        if (updateResponse.ok && updateResult.success) {
+                            product.inventory = newInventory;
+                            alert('Inventory updated successfully');
+                        } else {
+                            alert(`Failed to update inventory: ${updateResult.message}`);
+                        }
+                    });
+                    inventoryCell.appendChild(updateInventoryButton);
+                    row.appendChild(inventoryCell);
+
+                    // Price
+                    const priceCell = document.createElement('td');
+                    const priceInput = document.createElement('input');
+                    priceInput.type = 'number';
+                    priceInput.value = product.price;
+                    priceInput.min = 0;
+                    priceInput.step = 0.01;
+                    priceInput.style.width = '60px';
+                    priceCell.appendChild(priceInput);
+                    const updatePriceButton = document.createElement('button');
+                    updatePriceButton.textContent = 'Update';
+                    updatePriceButton.addEventListener('click', async () => {
+                        const newPrice = parseFloat(priceInput.value);
+                        if (isNaN(newPrice) || newPrice < 0) {
+                            alert('Invalid price value');
+                            return;
+                        }
+                        const updateResponse = await fetch('/product/price', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ product_id: product.id, new_price: newPrice })
+                        });
+                        const updateResult = await updateResponse.json();
+                        if (updateResponse.ok && updateResult.success) {
+                            product.price = newPrice;
+                            alert('Price updated successfully');
+                        } else {
+                            alert(`Failed to update price: ${updateResult.message}`);
+                        }
+                    });
+                    priceCell.appendChild(updatePriceButton);
+                    row.appendChild(priceCell);
+
+                    // Delete
+                    const actionsCell = document.createElement('td');
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.addEventListener('click', async () => {
+                        const deleteResponse = await fetch('/product', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ product_id: product.id })
+                        });
+                        const deleteResult = await deleteResponse.json();
+                        if (deleteResponse.ok && deleteResult.success) {
+                            row.remove();
+                            alert('Product deleted successfully');
+                        } else {
+                            alert(`Failed to delete product: ${deleteResult.message}`);
+                        }
+                    });
+                    actionsCell.appendChild(deleteButton);
+                    row.appendChild(actionsCell);
+
+                    productsTableBody.appendChild(row);
+                });
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            alert('Failed to fetch products.');
+        }
+    });
+
     // Logout functionality
     document.getElementById('logout-button').addEventListener('click', async () => {
         const response = await fetch('/logout', { method: 'GET' });

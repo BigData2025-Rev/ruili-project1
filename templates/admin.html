@@ -8,8 +8,12 @@
 </head>
 <body>
     <h1>Admin Dashboard</h1>
-    <button id="check-users-button">Check All Users</button>
+    
     <button id="return-button">Return</button>
+    <button id="logout-button">Logout</button>
+    
+    <h2>Users</h2>
+    <button id="check-users-button">Check All Users</button>
     <table border="1">
         <thead>
             <tr>
@@ -23,6 +27,23 @@
             <!-- User rows will be dynamically populated here -->
         </tbody>
     </table>
-    <button id="logout-button">Logout</button>
+
+    <h2>Products</h2>
+    <button id="check-products-button">Check All Products</button>
+    <table border="1" id="products-table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Inventory</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="products-table-body">
+            <!-- Product rows will be dynamically populated here -->
+        </tbody>
+    </table>
+    
 </body>
 </html>

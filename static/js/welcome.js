@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const table = document.getElementById('product-table');
     const tableBody = document.getElementById('product-table-body');
     const loadingMessage = document.getElementById('loading-message');
-    
+
     try {
         const response = await fetch('/products', { method: 'GET' });
         if (!response.ok) {
@@ -62,7 +62,56 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const inventoryCell = document.createElement('td');
             inventoryCell.textContent = product.inventory;
+            inventoryCell.setAttribute('data-inventory', product.inventory); // 保存库存信息
             row.appendChild(inventoryCell);
+
+            const purchaseCell = document.createElement('td');
+            const quantityInput = document.createElement('input');
+            quantityInput.type = 'number';
+            quantityInput.min = 1;
+            quantityInput.max = product.inventory;
+            quantityInput.value = 1;
+            quantityInput.style.width = '50px';
+
+            const purchaseButton = document.createElement('button');
+            purchaseButton.textContent = 'Buy';
+            purchaseButton.addEventListener('click', async () => {
+                const quantity = parseInt(quantityInput.value);
+                if (isNaN(quantity) || quantity < 1 || quantity > product.inventory) {
+                    alert('Invalid quantity');
+                    return;
+                }
+
+                try {
+                    const updateResponse = await fetch('/product/inventory', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            product_id: product.id,
+                            change_amount: -quantity
+                        })
+                    });
+
+                    const updateResult = await updateResponse.json();
+                    if (!updateResponse.ok || !updateResult.success) {
+                        throw new Error(updateResult.message || 'Failed to purchase product');
+                    }
+
+                    // 更新库存显示
+                    product.inventory -= quantity;
+                    inventoryCell.textContent = product.inventory;
+                    quantityInput.max = product.inventory;
+                    alert('Purchase successful');
+                } catch (error) {
+                    alert(`Error purchasing product: ${error.message}`);
+                }
+            });
+
+            purchaseCell.appendChild(quantityInput);
+            purchaseCell.appendChild(purchaseButton);
+            row.appendChild(purchaseCell);
 
             tableBody.appendChild(row);
         });
