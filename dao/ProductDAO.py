@@ -66,7 +66,7 @@ class ProductDAO:
 
         except mysql.connector.Error as e:
             logger.warning(f"Failed to get all products: {e}")
-            return []
+            return None
 
         finally:
             if connection and connection.is_connected():

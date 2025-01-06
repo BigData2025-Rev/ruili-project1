@@ -128,3 +128,6 @@ class UserService:
         if affected_rows > 0:
             return {"success": True, "message": f"User role updated to {role}."}
         return {"success": False, "message": "Failed to update user role."}
+    
+
+

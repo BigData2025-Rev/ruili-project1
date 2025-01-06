@@ -232,3 +232,49 @@ def delete_product_by_id():
         return jsonify({"success": False, "message": "Invalid input."}), 400
     result = ProductService.delete_product_by_id(data['product_id'])
     return jsonify(result), (200 if result["success"] else 500)
+
+
+"""
+Orders related
+"""
+@app.route('/orders', methods=['GET'])
+def get_all_orders():
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    if session['role'] != 'admin':
+        return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
+    result = OrderService.get_all_orders()
+    return jsonify(result), (200 if result["success"] else 500)
+
+@app.route('/user/orders', methods=['GET'])
+def get_current_user_orders():
+    # this method only works for current user
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    result = OrderService.get_order_by_user_id(session['user_id'])
+    return jsonify(result), (200 if result["success"] else 500)
+
+"""
+Purchase
+"""
+@app.route('/purchase', methods=['POST'])
+def purchase_product():
+    if 'token' not in session:
+        return jsonify({"success": False, "message": "Unauthorized access."}), 401
+
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"success": False, "message": "User ID not found in session."}), 400
+
+    data = request.json
+    if not data or 'product_id' not in data or 'quantity' not in data:
+        return jsonify({"success": False, "message": "Product ID and quantity are required."}), 400
+
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    try:
+        result = OrderService.create_order(user_id, product_id, quantity)
+        return jsonify(result), (200 if result["success"] else 400)
+    except Exception as e:
+        return jsonify({"success": False, "message": f"An unexpected error occurred: {str(e)}"}), 500

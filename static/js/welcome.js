@@ -157,6 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const purchaseButton = document.createElement('button');
             purchaseButton.textContent = 'Buy';
+            
             purchaseButton.addEventListener('click', async () => {
                 const quantity = parseInt(quantityInput.value);
                 if (isNaN(quantity) || quantity < 1 || quantity > product.inventory) {
@@ -164,38 +165,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                     return;
                 }
             
-                const totalCost = quantity * parseFloat(product.price); // 计算总价格
-            
                 try {
-                    // 更新库存
-                    const updateInventoryResponse = await fetch('/product/inventory', {
-                        method: 'PUT',
+                    // 调用 /purchase 路由
+                    const response = await fetch('/purchase', {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
                             product_id: product.id,
-                            change_amount: -quantity
+                            quantity: quantity
                         })
                     });
             
-                    const updateInventoryResult = await updateInventoryResponse.json();
-                    if (!updateInventoryResponse.ok || !updateInventoryResult.success) {
-                        throw new Error(updateInventoryResult.message || 'Failed to purchase product');
-                    }
-            
-                    // 更新存款
-                    const updateDepositResponse = await fetch('/user/minusdeposite', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ amount: totalCost }) // 扣减总价格
-                    });
-            
-                    const updateDepositResult = await updateDepositResponse.json();
-                    if (!updateDepositResponse.ok || !updateDepositResult.success) {
-                        throw new Error(updateDepositResult.message || 'Failed to update deposit');
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Failed to process purchase');
                     }
             
                     // 更新页面显示
@@ -210,7 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } catch (error) {
                     alert(`Error processing purchase: ${error.message}`);
                 }
-            });
+            });            
 
             purchaseCell.appendChild(quantityInput);
             purchaseCell.appendChild(purchaseButton);

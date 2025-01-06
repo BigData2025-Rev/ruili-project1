@@ -56,6 +56,26 @@ class OrderDAO:
                 connection.close()
 
     @staticmethod
+    def get_all_orders():
+        connection = None
+        try:
+            connection = DBConnector.get_connection()
+            cursor = connection.cursor(dictionary=True)
+
+            query = "SELECT * FROM orders"
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return [Order.from_dict(row) for row in results]
+
+        except mysql.connector.Error as e:
+            logger.warning(f"Failed to get orders: {e}")
+            return []
+
+        finally:
+            if connection and connection.is_connected():
+                connection.close()
+
+    @staticmethod
     def get_order_by_id(order_id):
         connection = None
         try:
@@ -76,7 +96,7 @@ class OrderDAO:
                 connection.close()
 
     @staticmethod
-    def get_orders_by_user(user_id):
+    def get_orders_by_user_id(user_id):
         connection = None
         try:
             connection = DBConnector.get_connection()
@@ -90,6 +110,46 @@ class OrderDAO:
         except mysql.connector.Error as e:
             logger.warning(f"Failed to get orders for user_id={user_id}: {e}")
             return []
+
+        finally:
+            if connection and connection.is_connected():
+                connection.close()
+
+    @staticmethod
+    def update_inventory_deposit_and_create_order(product_id, new_inventory, user_id, new_deposit, quantity):
+        # in transaction, update both product inventory and user deposit, and create the order
+        # in case database error happened during the process
+        connection = None
+        try:
+            connection = DBConnector.get_connection()
+            cursor = connection.cursor()
+            connection.start_transaction()
+
+            # update inventory
+            inventory_query = "UPDATE products SET inventory = %s WHERE id = %s"
+            cursor.execute(inventory_query, (new_inventory, product_id))
+
+            # update user deposit
+            deposit_query = "UPDATE users SET deposit = %s WHERE id = %s"
+            cursor.execute(deposit_query, (new_deposit, user_id))
+
+            # create order
+            order_query = """
+                INSERT INTO orders (user_id, product_id, quantity)
+                VALUES (%s, %s, %s)
+            """
+            cursor.execute(order_query, (user_id, product_id, quantity))
+
+            # commit
+            connection.commit()
+            logger.info(f"Order created: user_id={user_id}, product_id={product_id}, quantity={quantity}.")
+            return cursor.lastrowid 
+
+        except mysql.connector.Error as e:
+            if connection:
+                connection.rollback()  # here, exception happened, rollback
+            logger.warning(f"Failed to process transaction: {e}")
+            return None
 
         finally:
             if connection and connection.is_connected():
