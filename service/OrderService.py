@@ -48,14 +48,30 @@ class OrderService:
     @staticmethod
     def get_all_orders():
         orders = OrderDAO.get_all_orders()
+        orders_dict = []
+        for order in orders:
+            order_dict = order.to_dict()
+            product = ProductDAO.get_product_by_id(order.product_id)  # get product name
+            order_dict["product_name"] = product.name if product else "Unknown"
+            orders_dict.append(order_dict)
+
         if not orders:
-            return {"success": False, "orders": orders, "message": "Database query orders failed."}
-        return {"success": True, "orders": orders}
+            return {"success": False, "orders": orders_dict, "message": "Database query orders failed."}
+        return {"success": True, "orders": orders_dict}
 
     @staticmethod
     def get_order_by_user_id(user_id):
         user = UserDAO.get_user_by_id(user_id)
         if not user:
             return {"success": False, "message": "Order query failed. User id not exist."}
+
         orders = OrderDAO.get_orders_by_user_id(user_id)
-        return {"success": True, "orders": orders}
+        orders_dict = []
+        for order in orders:
+            order_dict = order.to_dict()
+            product = ProductDAO.get_product_by_id(order.product_id)  # get product name
+            order_dict["product_name"] = product.name if product else "Unknown"
+            orders_dict.append(order_dict)
+
+        return {"success": True, "orders": orders_dict}
+

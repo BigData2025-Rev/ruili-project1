@@ -45,6 +45,11 @@ def welcome():
         return redirect(url_for('index'))
     return render_template('welcome.html', username=session.get('username'))
 
+@app.route('/order_history')
+def order_history():
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    return render_template('order_history.html', username=session.get('username'))
 
 """
 User Related API

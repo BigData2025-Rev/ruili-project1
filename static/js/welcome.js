@@ -210,3 +210,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadingMessage.textContent = `Error loading products: ${error.message}`;
     }
 });
+
+// Order History button
+document.getElementById('my-orders-button').addEventListener('click', () => {
+    window.location.href = '/order_history'; // Redirect to order history page
+});
