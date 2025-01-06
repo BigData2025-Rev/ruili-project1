@@ -163,9 +163,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     alert('Invalid quantity');
                     return;
                 }
-
+            
+                const totalCost = quantity * parseFloat(product.price); // 计算总价格
+            
                 try {
-                    const updateResponse = await fetch('/product/inventory', {
+                    // 更新库存
+                    const updateInventoryResponse = await fetch('/product/inventory', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -175,19 +178,37 @@ document.addEventListener('DOMContentLoaded', async () => {
                             change_amount: -quantity
                         })
                     });
-
-                    const updateResult = await updateResponse.json();
-                    if (!updateResponse.ok || !updateResult.success) {
-                        throw new Error(updateResult.message || 'Failed to purchase product');
+            
+                    const updateInventoryResult = await updateInventoryResponse.json();
+                    if (!updateInventoryResponse.ok || !updateInventoryResult.success) {
+                        throw new Error(updateInventoryResult.message || 'Failed to purchase product');
                     }
-
-                    // 更新库存显示
+            
+                    // 更新存款
+                    const updateDepositResponse = await fetch('/user/minusdeposite', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ amount: totalCost }) // 扣减总价格
+                    });
+            
+                    const updateDepositResult = await updateDepositResponse.json();
+                    if (!updateDepositResponse.ok || !updateDepositResult.success) {
+                        throw new Error(updateDepositResult.message || 'Failed to update deposit');
+                    }
+            
+                    // 更新页面显示
                     product.inventory -= quantity;
                     inventoryCell.textContent = product.inventory;
                     quantityInput.max = product.inventory;
+            
+                    // 重新加载用户信息
+                    await loadCurrentUser();
+            
                     alert('Purchase successful');
                 } catch (error) {
-                    alert(`Error purchasing product: ${error.message}`);
+                    alert(`Error processing purchase: ${error.message}`);
                 }
             });
 
