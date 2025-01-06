@@ -4,90 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
     <script src="/static/js/admin.js" defer></script>
 </head>
 <body>
     <h1>Admin Dashboard</h1>
     
-    <button id="return-button">Return</button>
-    <button id="logout-button">Logout</button>
+    <div class="button-container">
+        <button id="return-button">Return</button>
+        <button id="logout-button">Logout</button>
+    </div>
     
-    <h2>Users</h2>
-    <button id="check-users-button">Check All Users</button>
-    <button id="hide-users-button">Hide Users</button>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="users-table">
-            <!-- User rows will be dynamically populated here -->
-        </tbody>
-    </table>
+    <div>
+        <h2>Users</h2>
+        <div class="button-container">
+            <button id="check-users-button">Check All Users</button>
+            <button id="hide-users-button">Hide Users</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="users-table"></tbody>
+        </table>
+    </div>
 
-    <h2>Products</h2>
-    <button id="check-products-button">Check All Products</button>
-    <button id="hide-products-button">Hide Products</button>
-    <table border="1" id="products-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Inventory</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="products-table-body">
-            <!-- Product rows will be dynamically populated here -->
-        </tbody>
-    </table>
+    <div>
+        <h2>Products</h2>
+        <div class="button-container">
+            <button id="check-products-button">Check All Products</button>
+            <button id="hide-products-button">Hide Products</button>
+        </div>
+        <table id="products-table">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Inventory</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="products-table-body"></tbody>
+        </table>
+    </div>
     
-    <h2>Orders</h2>
-    <button id="check-orders-button">Check All Orders</button>
-    <button id="hide-orders-button">Hide Orders</button>
-    <table border="1" id="orders-table" style="display:none;">
-        <thead>
-            <tr>
-                <th>Order ID</th>
-                <th>User ID</th>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Order Date</th>
-            </tr>
-        </thead>
-        <tbody id="orders-table-body">
-            <!-- Order rows will be dynamically populated here -->
-        </tbody>
-    </table>
+    <div>
+        <h2>Orders</h2>
+        <div class="button-container">
+            <button id="check-orders-button">Check All Orders</button>
+            <button id="hide-orders-button">Hide Orders</button>
+        </div>
+        <table id="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>User ID</th>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Order Date</th>
+                </tr>
+            </thead>
+            <tbody id="orders-table-body" class="hidden">
+                <!-- Order rows will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
 
     <h2>Add New Product</h2>
     <form id="add-product-form" enctype="multipart/form-data">
         <label for="product-name">Product Name:</label>
         <input type="text" id="product-name" name="name" required>
-        <br>
         <label for="price">Price:</label>
         <input type="number" id="price" name="price" min="0" step="0.01" required>
-        <br>
         <label for="inventory">Inventory:</label>
         <input type="number" id="inventory" name="inventory" min="0" required>
-        <br>
         <label for="category">Category:</label>
         <input type="text" id="category" name="category">
-        <br>
         <label for="description">Description:</label>
         <textarea id="description" name="description"></textarea>
-        <br>
         <label for="image">Image:</label>
         <input type="file" id="image" name="image" accept="image/*">
-        <br>
         <button type="submit">Add Product</button>
     </form>
-
 </body>
 </html>

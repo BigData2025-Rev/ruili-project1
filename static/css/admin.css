@@ -1,0 +1,142 @@
+/* 全局样式 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: url('/static/img/admin_background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* 标题样式 */
+h1 {
+    margin: 20px 0;
+    font-size: 2.5em;
+    color: #ffffff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+h2 {
+    color: #ffffff;
+    text-align: left;
+    margin: 20px 0 10px;
+    display: inline-block;
+}
+
+/* 按钮容器 */
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* 按钮样式 */
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* 表格样式 */
+table {
+    width: 90%;                /* 固定宽度百分比 */
+    max-width: 1200px;         /* 最大宽度 */
+    min-width: 800px;          /* 最小宽度 */
+    margin: 0 0 20px;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    visibility: visible;       /* 默认可见 */
+}
+
+table.hidden {
+    visibility: hidden;        /* 表格不可见，但占位 */
+}
+
+tbody.hidden {
+    display: none;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #444;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+tr:hover {
+    background: rgba(0, 123, 255, 0.1);
+}
+
+/* 表单样式 */
+form {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form label {
+    font-weight: bold;
+    color: #333;
+}
+
+form input, form textarea, form select, form button {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form input:focus, form textarea:focus {
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+form button {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+form button:hover {
+    background: #f0f0f0;
+}

@@ -210,43 +210,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const ordersTable = document.getElementById('orders-table');
     const ordersTableBody = document.getElementById('orders-table-body');
 
-    // Check All Orders
+    // 显示 Orders 表格内容
     document.getElementById('check-orders-button').addEventListener('click', async () => {
-        ordersTableBody.innerHTML = ''; // Clear existing rows
+        const ordersTableBody = document.getElementById('orders-table-body');
+        ordersTableBody.classList.remove('hidden'); // 显示 tbody
+        ordersTableBody.innerHTML = ''; // 清空现有内容
+    
         try {
             const response = await fetch('/orders');
             const result = await response.json();
-
+    
             if (result.success) {
-                ordersTable.style.display = 'table'; // Show table
-
                 result.orders.forEach(order => {
                     const row = document.createElement('tr');
-                    
-                    const orderIdCell = document.createElement('td');
-                    orderIdCell.textContent = order.id;
-                    row.appendChild(orderIdCell);
-
-                    const userIdCell = document.createElement('td');
-                    userIdCell.textContent = order.user_id;
-                    row.appendChild(userIdCell);
-
-                    const productIdCell = document.createElement('td');
-                    productIdCell.textContent = order.product_id;
-                    row.appendChild(productIdCell);
-
-                    const productNameCell = document.createElement('td');
-                    productNameCell.textContent = order.product_name || 'Unknown';
-                    row.appendChild(productNameCell);
-
-                    const quantityCell = document.createElement('td');
-                    quantityCell.textContent = order.quantity;
-                    row.appendChild(quantityCell);
-
-                    const orderDateCell = document.createElement('td');
-                    orderDateCell.textContent = new Date(order.order_date).toLocaleString();
-                    row.appendChild(orderDateCell);
-
+                    row.innerHTML = `
+                        <td>${order.id}</td>
+                        <td>${order.user_id}</td>
+                        <td>${order.product_id}</td>
+                        <td>${order.product_name || 'Unknown'}</td>
+                        <td>${order.quantity}</td>
+                        <td>${new Date(order.order_date).toLocaleString()}</td>
+                    `;
                     ordersTableBody.appendChild(row);
                 });
             } else {
@@ -259,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hide Orders
     document.getElementById('hide-orders-button').addEventListener('click', () => {
-        ordersTable.style.display = 'none';
+        document.getElementById('orders-table-body').classList.add('hidden');
     });
 
     // Hide Users

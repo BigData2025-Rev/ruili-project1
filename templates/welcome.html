@@ -4,34 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
+    <link rel="stylesheet" href="/static/css/welcome.css">
     <script src="/static/js/welcome.js" defer></script>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        img {
-            max-width: 50px;
-            max-height: 50px;
-        }
-    </style>
 </head>
 <body>
     <h1>Welcome, {{ username }}!</h1>
-    
-    <button id="my-orders-button">My Orders</button>
-    <button id="admin-dashboard-button">Admin Dashboard</button>
-    <button id="logout-button">Logout</button>
-    
-    <div>
+
+    <div class="button-container">
+        <button id="my-orders-button">My Orders</button>
+        <button id="admin-dashboard-button">Admin Dashboard</button>
+        <button id="logout-button">Logout</button>
+    </div>
+
+    <div class="user-info">
         <p><strong>Current User:</strong> <span id="current-username">Loading...</span></p>
         <p><strong>Current Deposit:</strong> $<span id="current-deposit">Loading...</span></p>
         <label for="add-deposit-input">Add Saving:</label>
