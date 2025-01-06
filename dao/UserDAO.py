@@ -17,6 +17,7 @@ class UserDAO:
     | username | varchar(255)         | NO   | UNI | NULL    |                |
     | password | varchar(255)         | NO   |     | NULL    |                |
     | role     | enum('user','admin') | NO   |     | NULL    |                |
+    | deposit  | decimal(10,2)        | NO   |     | 0.00    |                |
     +----------+----------------------+------+-----+---------+----------------+
     """
 
@@ -88,6 +89,28 @@ class UserDAO:
         except mysql.connector.Error as e:
             logger.warning(f"Database query failed: {e} when querying {user_id}")
             return None
+
+        finally:
+            if connection and connection.is_connected():
+                connection.close()
+
+    @staticmethod
+    def update_user_deposit_by_id(user_id, new_deposit):
+        connection = None
+        try:
+            connection = DBConnector.get_connection()
+            cursor = connection.cursor()
+
+            query = "UPDATE users SET deposit = %s WHERE id = %s" 
+            cursor.execute(query, (new_deposit, user_id))
+            connection.commit()
+
+            logger.info(f"Updated deposit for user_id={user_id} to {new_deposit}.")
+            return cursor.rowcount 
+
+        except mysql.connector.Error as e:
+            logger.warning(f"Failed to update deposit: {e} for user_id={user_id}.")
+            return 0
 
         finally:
             if connection and connection.is_connected():

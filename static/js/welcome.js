@@ -19,6 +19,64 @@ document.getElementById('admin-dashboard-button').addEventListener('click', asyn
     }
 });
 
+// Load current user information
+async function loadCurrentUser() {
+    try {
+        const usernameResponse = await fetch('/user/username');
+        const usernameResult = await usernameResponse.json();
+        if (!usernameResult.username) {
+            throw new Error('Failed to retrieve username.');
+        }
+        document.getElementById('current-username').textContent = usernameResult.username;
+
+        const depositResponse = await fetch('/user/deposit');
+        const depositResult = await depositResponse.json();
+        if (!depositResult.success) {
+            throw new Error(depositResult.message || 'Failed to retrieve deposit.');
+        }
+        document.getElementById('current-deposit').textContent = depositResult.deposit.toFixed(2);
+    } catch (error) {
+        alert(`Failed to load user information: ${error.message}`);
+        console.error(error);
+    }
+}
+
+// Load user info when page is loaded
+loadCurrentUser();
+
+// Add deposit functionality
+document.getElementById('add-deposit-button').addEventListener('click', async () => {
+    const addDepositInput = document.getElementById('add-deposit-input');
+    const amount = parseFloat(addDepositInput.value);
+
+    if (isNaN(amount) || amount <= 0) {
+        alert('Please enter a valid positive amount.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/user/adddeposite', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount })
+        });
+
+        const result = await response.json();
+        if (response.ok && result.success) {
+            alert('Deposit updated successfully!');
+            await loadCurrentUser(); // Reload user information
+            addDepositInput.value = ''; // Clear input field
+        } else {
+            alert(`Failed to update deposit: ${result.message}`);
+        }
+    } catch (error) {
+        alert('Failed to update deposit.');
+        console.error(error);
+    }
+});
+
 // Load products on page load
 document.addEventListener('DOMContentLoaded', async () => {
     const table = document.getElementById('product-table');

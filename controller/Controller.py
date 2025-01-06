@@ -50,6 +50,23 @@ def welcome():
 User Related API
 """
 
+@app.route('/user/username', methods=['GET'])
+def get_current_username():
+    if 'token' not in session:
+        return redirect(url_for('index'))
+    return jsonify({"username": session['username']})
+
+@app.route('/user/deposit', methods=['GET'])
+def get_current_deposit():
+    if 'token' not in session:
+        return jsonify({"success": False, "message": "Unauthorized access."}), 401 
+    result = UserService.get_current_deposit_by_id(session["user_id"])
+    
+    if not result["success"]:
+        return jsonify({"success": False, "message": result["message"], "deposit": 0.00}), 404
+    return jsonify({"success": True, "deposit": result["deposit"]}), 200
+
+
 @app.route('/admin', methods=['GET'])
 def admin_page():
     if 'token' not in session:
@@ -101,7 +118,29 @@ def update_role_by_id():
     result = UserService.update_user_role_by_user_id(data['user_id'], data['role'])
     return jsonify(result)
 
+@app.route('/user/adddeposite', methods=['PUT'])
+def add_deposit_to_current_user():
+    if 'token' not in session:
+        return jsonify({"success": False, "message": "Unauthorized access."}), 401
+    
+    data = request.json
+    if not data or 'amount' not in data:
+        return jsonify({"success": False, "message": "Deposit add amount are required."}), 400
+    
+    result = UserService.add_money_to_deposit_by_id(session['user_id'], data['amount'])
+    return jsonify(result), (200 if result["success"] else 400)
 
+@app.route('/user/minusdeposite', methods=['PUT'])
+def minus_deposit_to_current_user():
+    if 'token' not in session:
+        return jsonify({"success": False, "message": "Unauthorized access."}), 401
+    
+    data = request.json
+    if not data or 'amount' not in data:
+        return jsonify({"success": False, "message": "Deposit minus amount are required."}), 400
+    
+    result = UserService.minus_money_to_deposit_by_id(session['user_id'], data['amount'])
+    return jsonify(result), (200 if result["success"] else 400)
 """
 Product related API
 """

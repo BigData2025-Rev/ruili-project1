@@ -2,11 +2,12 @@
 
 class User:
     
-    def __init__(self, userid, username, password, role):
+    def __init__(self, userid, username, password, role, deposit=0.0):
         self.id = userid
         self.username = username
         self.password = password
         self.role = role
+        self.deposit = deposit
     
     # string format
     def __repr__(self):
@@ -21,7 +22,8 @@ class User:
             "id": self.id,
             "username": self.username,
             "password": self.password,
-            "role": self.role
+            "role": self.role,
+            "deposit": self.deposit
         }
     
     # create a user object from the dict data
@@ -30,5 +32,6 @@ class User:
             userid=user_data.get('id'),
             username=user_data.get('username'),
             password=user_data.get('password'),
-            role=user_data.get('role')
+            role=user_data.get('role'),
+            deposit=user_data.get('deposit', 0.00)
         )

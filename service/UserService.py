@@ -54,8 +54,54 @@ class UserService:
     def get_all_users():
         users = UserDAO.get_all_users()
         # Filter sensitive information
-        filtered_users = [{"user_id": user.id, "username": user.username, "role": user.role} for user in users]
+        filtered_users = [{"user_id": user.id, "username": user.username, "role": user.role, "deposit": user.deposit} for user in users]
         return {"success": True, "users": filtered_users}
+
+    @staticmethod
+    def get_current_deposit_by_id(user_id):
+        user = UserDAO.get_user_by_id(user_id)
+        if not user:
+            return {"success": False, "deposit": 0.00, "message": f"User with id {user_id} does not exist."}
+        return {"success": True, "deposit": float(user.deposit)}
+
+    @staticmethod
+    def add_money_to_deposit_by_id(user_id, amount):
+        if amount <= 0:
+            return {"success": False, "message": "Amount must be positive."}
+
+        user = UserDAO.get_user_by_id(user_id)
+        if not user:
+            return {"success": False, "message": f"User with id {user_id} does not exist."}
+
+        new_deposit = user.deposit + amount
+        rows_affected = UserDAO.update_user_deposit_by_id(user_id, new_deposit)
+
+        if rows_affected > 0:
+            return {"success": True, "message": f"Deposit updated successfully. New deposit: {new_deposit}"}
+        else:
+            return {"success": False, "message": "Failed to update deposit."}
+
+    @staticmethod
+    def minus_money_to_deposit_by_id(user_id, amount):
+        if amount <= 0:
+            return {"success": False, "message": "Amount must be positive."}
+
+        user = UserDAO.get_user_by_id(user_id)
+        if not user:
+            return {"success": False, "message": f"User with id {user_id} does not exist."}
+
+        if user.deposit < amount:
+            return {"success": False, "message": "Insufficient deposit."}
+
+        new_deposit = user.deposit - amount
+        if new_deposit < 0:
+            return {"success": False, "message": "The deposit less than the amount you want to purchase."}
+        rows_affected = UserDAO.update_user_deposit_by_id(user_id, new_deposit)
+
+        if rows_affected > 0:
+            return {"success": True, "message": f"Deposit updated successfully. New deposit: {new_deposit}"}
+        else:
+            return {"success": False, "message": "Failed to update deposit."}
 
     @staticmethod
     def delete_user_by_id(user_id):
