@@ -38,16 +38,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         result.products.forEach(product => {
             const row = document.createElement('tr');
-
             const idCell = document.createElement('td');
             idCell.textContent = product.id;
             row.appendChild(idCell);
 
             const imageCell = document.createElement('td');
             const img = document.createElement('img');
-            img.src = `/static/img/${product.name}.jpg`;
+            // 定义支持的图片格式
+            const formats = ['jpg', 'png', 'jpeg', 'gif'];
+            let formatIndex = 0;
+            // 尝试加载不同格式的图片
+            function tryNextFormat() {
+                if (formatIndex < formats.length) {
+                    img.src = `/static/img/${product.name.replace(/\s+/g, '_')}.${formats[formatIndex]}`;
+                    formatIndex++;
+                } else {
+                    // 如果所有格式都失败，则使用默认图片
+                    img.src = '/static/img/default.jpg';
+                }
+            }
+            // 当图片加载失败时尝试下一个格式
+            img.onerror = tryNextFormat;
+            // 开始尝试加载第一种格式
+            tryNextFormat();
             img.alt = product.name;
-            img.onerror = () => { img.src = '/static/img/default.jpg'; }; // Fallback image
             imageCell.appendChild(img);
             row.appendChild(imageCell);
 
@@ -64,6 +78,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             inventoryCell.textContent = product.inventory;
             inventoryCell.setAttribute('data-inventory', product.inventory); // 保存库存信息
             row.appendChild(inventoryCell);
+
+            // Category
+            const categoryCell = document.createElement('td');
+            categoryCell.textContent = product.category || 'N/A'; // show N/A if empty
+            row.appendChild(categoryCell);
+
+            // Description
+            const descriptionCell = document.createElement('td');
+            descriptionCell.textContent = product.description || 'N/A'; // show N/A if empty
+            row.appendChild(descriptionCell);
 
             const purchaseCell = document.createElement('td');
             const quantityInput = document.createElement('input');

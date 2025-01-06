@@ -1,12 +1,18 @@
+import os
 from flask_cors import CORS
 from flask import Flask
 from config.config import Config
+from werkzeug.utils import secure_filename
 
-# 创建 Flask 实例
+UPLOAD_FOLDER = 'static/img'
+MAX_CONTENT_LENGTH = 1 * 1024 * 1024  # 1MB
+
 app = Flask(
     __name__,
-    template_folder='templates',  # 模板文件夹
-    static_folder='static'        # 静态资源文件夹
+    template_folder='templates',  
+    static_folder='static'        
 )
 CORS(app) # allow cors request, otherwise I cannot access any non-static request
-app.config['SECRET_KEY'] = Config.AppSecretKey  # 替换为安全的随机密钥
+app.config['SECRET_KEY'] = Config.AppSecretKey  
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH

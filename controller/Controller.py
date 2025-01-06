@@ -1,8 +1,10 @@
+import os
 from flask import render_template, jsonify, request, redirect, url_for, session
 from app import app
 from service.UserService import UserService
 from service.ProductService import ProductService
 from service.OrderService import OrderService
+from werkzeug.utils import secure_filename
 
 @app.route('/')
 def index():
@@ -124,11 +126,32 @@ def add_product():
         return redirect(url_for('index'))
     if session['role'] != 'admin':
         return jsonify({"success": False, "message": "Only admin users can perform this action."}), 403
-    data = request.json
-    if not data or 'name' not in data or 'price' not in data or 'inventory' not in data \
-        or "category" not in data or "description" not in data:
+    
+    # function to check if file uploaded allowed
+    def allowed_file(filename):
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    
+    data = request.form  # take product info
+    file = request.files.get('image')  # product image info
+
+    if not data or 'name' not in data or 'price' not in data or 'inventory' not in data:
         return jsonify({"success": False, "message": "Invalid input."}), 400
-    result = ProductService.add_product(data)
+
+    product_data = {
+        'name': data['name'],
+        'price': data['price'],
+        'inventory': data['inventory'],
+        'category': data.get('category', ''),
+        'description': data.get('description', '')
+    }
+    result = ProductService.add_product(product_data)   # add the product info to database
+    
+    if result["success"] and file and allowed_file(file.filename):
+        filename = secure_filename(f"{data['name']}.jpg") 
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+    
     return jsonify(result), (201 if result["success"] else 500)
 
 @app.route('/product/inventory', methods=['PUT'])

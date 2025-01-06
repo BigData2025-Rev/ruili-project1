@@ -181,6 +181,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // function to add new product
+    document.getElementById('add-product-form').addEventListener('submit', async (event) => {
+        event.preventDefault(); // 阻止默认提交行为
+    
+        const form = event.target;
+        const formData = new FormData(form);
+    
+        try {
+            const response = await fetch('/product', {
+                method: 'PUT',
+                body: formData,
+            });
+    
+            const result = await response.json();
+            if (response.ok && result.success) {
+                alert('Product added successfully');
+                location.reload(); // 刷新页面
+            } else {
+                alert(`Failed to add product: ${result.message}`);
+            }
+        } catch (error) {
+            alert(`Error adding product: ${error.message}`);
+        }
+    });    
+
     // Logout functionality
     document.getElementById('logout-button').addEventListener('click', async () => {
         const response = await fetch('/logout', { method: 'GET' });
