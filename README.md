@@ -1,7 +1,4 @@
 # TODO
-- Finish logger logic.
-- Add more css web style.
-- Make ERD.
 - Improve code readability.
 
 # ruili-project1
@@ -29,6 +26,9 @@
 - product_id: int, not null, references product(id), on delete/update cascade
 - quantity: int, not null
 - order_date: datetime, not null, default current_timestamp
+
+### Database ERD 
+![](./MySQL-ERD-2025-01-06.png)
 
 ### Web Page
 **Login and register page**
