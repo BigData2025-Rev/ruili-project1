@@ -12,19 +12,17 @@ class ProductDAO:
     
     """
     Table products
-    +-------------+---------------+------+-----+-------------------+-----------------------------------------------+
-    | Field       | Type          | Null | Key | Default           | Extra                                         |
-    +-------------+---------------+------+-----+-------------------+-----------------------------------------------+
-    | id          | int           | NO   | PRI | NULL              | auto_increment                                |
-    | name        | varchar(255)  | NO   |     | NULL              |                                               |
-    | description | text          | YES  |     | NULL              |                                               |
-    | price       | decimal(10,2) | NO   |     | NULL              |                                               |
-    | tags        | varchar(255)  | YES  |     | NULL              |                                               |
-    | category    | varchar(255)  | YES  |     | NULL              |                                               |
-    | inventory   | int           | NO   |     | NULL              |                                               |
-    | created_at  | datetime      | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED                             |
-    | updated_at  | datetime      | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
-    +-------------+---------------+------+-----+-------------------+-----------------------------------------------+
+    +-------------+---------------+------+-----+---------+----------------+
+    | Field       | Type          | Null | Key | Default | Extra          |
+    +-------------+---------------+------+-----+---------+----------------+
+    | id          | int           | NO   | PRI | NULL    | auto_increment |
+    | name        | varchar(255)  | NO   |     | NULL    |                |
+    | description | text          | YES  |     | NULL    |                |
+    | price       | decimal(18,2) | NO   |     | NULL    |                |
+    | tags        | varchar(255)  | YES  |     | NULL    |                |
+    | category    | varchar(255)  | YES  |     | NULL    |                |
+    | inventory   | int           | NO   |     | NULL    |                |
+    +-------------+---------------+------+-----+---------+----------------+
     """
     
     @staticmethod

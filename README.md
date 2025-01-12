@@ -28,7 +28,7 @@
 - order_date: datetime, not null, default current_timestamp
 
 ### Database ERD 
-![](./MySQL-ERD-2025-01-06.png)
+![](./ERD/MySQL-ERD-2025-01-12.png)
 
 ### Web Page
 **Login and register page**

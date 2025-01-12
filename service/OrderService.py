@@ -95,6 +95,7 @@ class OrderService:
             order_dict = order.to_dict()
             product = ProductDAO.get_product_by_id(order.product_id)  # Get product name
             order_dict["product_name"] = product.name if product else "Unknown"
+            # order_dict["product_price"] = product.price if product else 0.0
             orders_dict.append(order_dict)
 
         logger.info(f"Fetched {len(orders)} orders for user_id={user_id}.")

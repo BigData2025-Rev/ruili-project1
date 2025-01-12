@@ -67,6 +67,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             productNameCell.textContent = order.product_name || 'Unknown';
             row.appendChild(productNameCell);
 
+            // const productPriceCell = document.createElement('td');
+            // productPriceCell.textContent = order.product_price;
+            // row.appendChild(productPriceCell);
+
             const productImageCell = document.createElement('td');
             const productImg = document.createElement('img');
             loadProductImage(productImg, order.product_name || 'Unknown');
